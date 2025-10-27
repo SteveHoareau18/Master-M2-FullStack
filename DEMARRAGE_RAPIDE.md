@@ -72,11 +72,11 @@ Besoin d'aide ?
 
 Checklist de démarrage
 
-- [ ] Docker installé et fonctionnel
-- [ ] BuildKit activé
-- [ ] Images d'analyse téléchargées
-- [ ] Scripts exécutés avec succès
-- [ ] Énoncé lu et compris
-- [ ] Template d'analyse ouvert
+- [x] Docker installé et fonctionnel
+- [x] BuildKit activé
+- [x] Images d'analyse téléchargées
+- [x] Scripts exécutés avec succès
+- [x] Énoncé lu et compris
+- [x] Template d'analyse ouvert
 
 ---
