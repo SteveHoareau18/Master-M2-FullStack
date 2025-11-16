@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Docker
 *.log
 .dockerignore
@@ -34,3 +35,19 @@ target/
 # OS
 .DS_Store
 Thumbs.db
+=======
+**/node_modules/
+**/__pycache__/
+**/*.pyc
+**/.venv/
+**/venv/
+**/target/
+**/*.class
+**/.idea/
+**/.vscode/
+.DS_Store
+**/.env
+**/*.log
+**/dist/
+**/build/
+>>>>>>> 454fd66 (Réorganisation: Création dossiers Jour2 et TP-J3)
