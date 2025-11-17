@@ -24,7 +24,7 @@ test-results/
 docs/
 
 # CI/CD
-.github
+../.github
 .gitlab-ci.yml
 
 # Secrets (au cas où)
