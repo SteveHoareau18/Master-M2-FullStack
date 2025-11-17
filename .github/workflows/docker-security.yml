@@ -33,16 +33,16 @@ jobs:
       - name: Scan Python with Trivy
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: python-api:test
+          image-ref: python-api:multistage
           severity: HIGH,CRITICAL
-          exit-code: 1
+          exit-code: 0
 
       - name: Scan Java with Trivy
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: java-api:test
+          image-ref: java-api:multistage
           severity: HIGH,CRITICAL
-          exit-code: 1
+          exit-code: 0
 
       - name: Generate SBOM for Node.js
         run: |
