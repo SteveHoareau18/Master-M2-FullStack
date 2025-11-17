@@ -70,12 +70,12 @@ Partie 2 - API Python FastAPI
 
 2.1 Analyse de l'image distroless
 
-| Métrique | Valeur |
-|----------|--------|
-| Taille finale | [X] MB |
-| Temps de build | [X] min |
-| Vulnérabilités | [X] |
-| Layers | [X] |
+| Métrique | Valeur  |
+|----------|---------|
+| Taille finale | 173 MB  |
+| Temps de build | 1min52s |
+| Vulnérabilités | 59      |
+| Layers | 51       |
 
 2.2 Test de l'application
 
@@ -87,17 +87,15 @@ curl http://localhost:8000/docs
 ```
 
 **Résultats :**
-- [ ] Application démarre correctement
-- [ ] Endpoints fonctionnels
-- [ ] Swagger UI accessible
-- [ ] Aucun shell disponible (sécurité)
+- [x] Application démarre correctement
+- [x] Endpoints fonctionnels
+- [x] Swagger UI accessible
+- [x] Aucun shell disponible (sécurité)
 
 2.3 Analyse avec trivy
 
 **Résultat du scan de sécurité :**
-```
-[Insérer ici le résultat du scan trivy]
-```
+[Fichier Python-API Trivy](Jour2/python-api-trivy-export.json)
 
 ---
 
@@ -105,12 +103,12 @@ curl http://localhost:8000/docs
 
 3.1 Analyse de l'image distroless
 
-| Métrique | Valeur |
-|----------|--------|
-| Taille finale | [X] MB |
-| Temps de build | [X] min |
-| Vulnérabilités | [X] |
-| Layers | [X] |
+| Métrique | Valeur  |
+|----------|---------|
+| Taille finale | 244 MB  |
+| Temps de build | 2min36s |
+| Vulnérabilités | [X]     |
+| Layers | [X]     |
 
 3.2 Test de l'application
 

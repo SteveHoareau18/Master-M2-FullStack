@@ -1,0 +1,41 @@
+# ===================================
+# ÉTAPE 1 : BUILD — Maven JDK
+# ===================================
+FROM maven:3.9.9-eclipse-temurin-21 AS builder
+
+# Définir le répertoire de travail
+WORKDIR /app
+
+# Copier le POM pour optimiser le cache Maven
+COPY pom.xml ./
+
+# Télécharger les dépendances (offline) pour accélérer le build
+RUN mvn dependency:go-offline -B --batch-mode --no-transfer-progress
+
+# Copier le code source
+COPY src ./src
+
+# Build de l'application Spring Boot
+# - skip tests / docs / sources pour réduire la taille
+RUN mvn clean package -DskipTests -B --batch-mode \
+    -Dmaven.test.skip=true \
+    -Dmaven.javadoc.skip=true \
+    -Dmaven.source.skip=true
+
+# ===================================
+# ÉTAPE 2 : DISTROLESS JRE — Image finale
+# ===================================
+FROM gcr.io/distroless/java21-debian12
+
+# Définir le répertoire de travail
+WORKDIR /app
+
+# Copier uniquement le JAR final depuis le builder
+COPY --from=builder /app/target/*.jar /app/spring-api-distroless.jar
+
+# Exposer le port Spring Boot (par défaut 8080)
+EXPOSE 8080
+
+# Lancer l'application avec le JRE distroless
+# Distroless n'a pas de shell → entrée en JSON obligatoire
+CMD ["spring-api-distroless.jar"]
