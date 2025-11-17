@@ -1,12 +1,6 @@
 name: Docker Security Scan
 
-on:
-  push:
-    paths:
-      - 'Jour2/**'
-  pull_request:
-    paths:
-      - 'Jour2/**'
+on: [push, pull_request]
 
 jobs:
   security:
