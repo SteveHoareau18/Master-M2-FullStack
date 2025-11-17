@@ -33,21 +33,21 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: node-api:test
-          severity: 'HIGH,CRITICAL'
+          severity: HIGH,CRITICAL
           exit-code: 1
 
       - name: Scan Python with Trivy
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: python-api:test
-          severity: 'HIGH,CRITICAL'
+          severity: HIGH,CRITICAL
           exit-code: 1
 
       - name: Scan Java with Trivy
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: java-api:test
-          severity: 'HIGH,CRITICAL'
+          severity: HIGH,CRITICAL
           exit-code: 1
 
       - name: Generate SBOM for Node.js
