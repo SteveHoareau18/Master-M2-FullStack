@@ -23,42 +23,47 @@ Partie 1 - API Node.js
 
 1.1 Analyse comparative des tailles
 
-| Version | Taille | Réduction | Temps de build |
-|---------|--------|-----------|----------------|
-| Standard | [X] MB | - | [X] min |
-| Multi-stage | [X] MB | [X]% | [X] min |
-| Distroless | [X] MB | [X]% | [X] min |
+| Version | Taille  | Réduction                                  | Temps de build |
+|---------|---------|--------------------------------------------|----------------|
+| Standard | 1370 MB | -                                          | 38secondes     |
+| Multi-stage | 262 MB  | 80,9%                                      | 1min45s        |
+| Distroless | 124 MB  | 52,7 % (Multi-stage) ou 90,94 % (Standard) | 1min54s        |
 
 1.2 Analyse des vulnérabilités
 
 | Version | Critical | High | Medium | Low | Total |
 |---------|----------|------|--------|-----|-------|
-| Standard | [X] | [X] | [X] | [X] | [X] |
-| Multi-stage | [X] | [X] | [X] | [X] | [X] |
-| Distroless | [X] | [X] | [X] | [X] | [X] |
+| Standard | 54       | 467  | 1109   | 821 | 2451  |
+| Multi-stage | 0        | 1    | 5      | 3   | 9     |
+| Distroless | 0        | 0    | 0      | 12  | 12    |
 
 1.3 Analyse des layers avec dive
 
 **Screenshot de l'analyse dive pour l'image standard :**
-```
-[Insérer ici le screenshot de dive pour node-api:standard]
-```
+![Screenshot dive nodejs standard](Jour2/dive nodejs standard.png)
 
 **Screenshot de l'analyse dive pour l'image distroless :**
-```
-[Insérer ici le screenshot de dive pour node-api:distroless]
-```
+![Screenshot dive nodejs distroless](Jour2/dive nodejs distroless.png)
+
 
 1.4 Observations techniques
 
 **Problèmes rencontrés :**
-- [Décrire les problèmes rencontrés]
+- Avec python (erreur lorsque j'essayais d'installer pip)
+- Afficher uniquement en une ligne le compte rendu de trivy
 
 **Solutions appliquées :**
-- [Décrire les solutions]
+- Environnement virtuel
+- docker run --rm -v /run/user/$(id -u)/docker.sock:/var/run/docker.sock \
+  aquasec/trivy image \
+  --skip-dirs /root/.npm/_cacache \
+  --format json \
+  node-api:standard \
+  | jq '[.Results[].Vulnerabilities[]?.Severity] | group_by(.) | map({Severity: .[0], Count: length})'
+
 
 **Points d'amélioration :**
-- [Décrire les améliorations possibles]
+- Adapté le script pour qu'il affiche uniquement les erreurs et pas tout le build, exporter dans un fichier exploitable
 
 ---
 Partie 2 - API Python FastAPI
