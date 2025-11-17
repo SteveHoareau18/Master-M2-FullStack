@@ -5,6 +5,7 @@ from datetime import datetime
 import os
 import psutil
 from typing import List, Dict, Any
+from pydantic import BaseModel
 
 # Configuration de l'application
 app = FastAPI(
@@ -30,20 +31,20 @@ app.add_middleware(
 )
 
 # Modèles de données
-class HealthResponse:
+class HealthResponse(BaseModel):
     status: str
     timestamp: str
     uptime: float
     memory: Dict[str, Any]
     version: str
 
-class Product:
+class Product(BaseModel):
     id: int
     name: str
     price: float
     category: str
 
-class User:
+class User(BaseModel):
     id: int
     name: str
     email: str

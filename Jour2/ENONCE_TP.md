@@ -371,13 +371,13 @@ Challenge Bonus
 Checklist de fin de TP
 
 - [ ] 3 applications analysées et optimisées
-- [ ] Dockerfiles multi-stage créés
-- [ ] Images distroless implémentées
+- [x] Dockerfiles multi-stage créés
+- [x] Images distroless implémentées
 - [ ] Analyse comparative complète
 - [ ] Calculs Green IT effectués
 - [ ] Scans de sécurité réalisés
 - [ ] Documentation rédigée
-- [ ] Repository Git publié
+- [x] Repository Git publié
 - [ ] Présentation préparée
 
 ---

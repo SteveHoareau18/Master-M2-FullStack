@@ -1,0 +1,73 @@
+# ===================================
+# ÉTAPE 1 : BUILDER — Installation deps
+# ===================================
+FROM python:3.11-slim-bookworm AS builder
+
+# Installer les outils nécessaires pour compiler les dépendances
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential gcc g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+# Installer Poetry (version fixe = reproductibilité)
+RUN pip install --no-cache-dir pip==24.0.0 poetry==1.8.3
+
+# Configuration Poetry
+ENV POETRY_NO_INTERACTION=1 \
+    POETRY_VENV_IN_PROJECT=1 \
+    POETRY_CACHE_DIR=/tmp/poetry_cache
+
+WORKDIR /app
+
+# Copier uniquement les fichiers Poetry (meilleur cache)
+COPY pyproject.toml poetry.lock* ./
+
+# Créer un venv système (externe, pas dans .venv)
+RUN python -m venv /opt/venv \
+    && /opt/venv/bin/pip install --no-cache-dir pip==24.0.0
+
+# Exporter les dépendances Poetry + installer dans le venv
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes --only=main \
+    && /opt/venv/bin/pip install --no-cache-dir -r requirements.txt \
+    && /opt/venv/bin/pip install --no-cache-dir uvicorn[standard]
+
+# Copier le code applicatif
+COPY app /app/app
+
+
+
+# ===================================
+# ÉTAPE 2 : PACKAGER — Assemblage final avant distroless
+# ===================================
+FROM python:3.11-slim-bookworm AS packager
+
+WORKDIR /app
+
+# Copier le venv complet
+COPY --from=builder /opt/venv /opt/venv
+
+# Copier l’application FastAPI
+COPY --from=builder /app /app
+
+
+
+# ===================================
+# ÉTAPE 3 : DISTROLESS — Image finale minimale & sécurisée
+# ===================================
+FROM gcr.io/distroless/python3-debian12
+
+# Variables Python
+ENV PYTHONPATH=/opt/venv/lib/python3.11/site-packages \
+    PATH=/opt/venv/bin:$PATH
+
+WORKDIR /app
+
+# Copier le venv + code
+COPY --from=packager /opt/venv /opt/venv
+COPY --from=packager /app /app
+
+# Exposer le port FastAPI
+EXPOSE 8000
+
+# Distroless n’a pas /bin/sh → entrée obligatoire en JSON
+ENTRYPOINT ["python3", "-m", "uvicorn"]
+CMD ["app.main:app", "--host", "0.0.0.0", "--port", "8000"]
