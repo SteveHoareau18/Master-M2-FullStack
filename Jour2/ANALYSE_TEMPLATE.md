@@ -54,12 +54,15 @@ Partie 1 - API Node.js
 
 **Solutions appliquées :**
 - Environnement virtuel
-- docker run --rm -v /run/user/$(id -u)/docker.sock:/var/run/docker.sock \
+
+```bash
+docker run --rm -v /run/user/$(id -u)/docker.sock:/var/run/docker.sock \
   aquasec/trivy image \
   --skip-dirs /root/.npm/_cacache \
   --format json \
   node-api:standard \
   | jq '[.Results[].Vulnerabilities[]?.Severity] | group_by(.) | map({Severity: .[0], Count: length})'
+```
 
 
 **Points d'amélioration :**
@@ -95,7 +98,7 @@ curl http://localhost:8000/docs
 2.3 Analyse avec trivy
 
 **Résultat du scan de sécurité :**
-[Fichier Python-API Trivy](Jour2/python-api-trivy-export.json)
+[Fichier Python-API Trivy](python-api/python-api-trivy-export.json)
 
 ---
 
@@ -120,10 +123,10 @@ curl http://localhost:8080/api/orders
 ```
 
 **Résultats :**
-- [ ] Application démarre correctement
-- [ ] Endpoints fonctionnels
-- [ ] Temps de démarrage acceptable
-- [ ] Aucun JDK en production
+- [x] Application démarre correctement
+- [x] Endpoints fonctionnels
+- [x] Temps de démarrage acceptable
+- [x] Aucun JDK en production
 
 3.3 Comparaison avec image standard
 
