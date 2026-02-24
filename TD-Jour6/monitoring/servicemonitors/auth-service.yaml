@@ -17,3 +17,6 @@ spec:
   - port: http
     interval: 30s
     path: /metrics
+    relabelings:
+    - sourceLabels: [__meta_kubernetes_namespace]
+      targetLabel: namespace

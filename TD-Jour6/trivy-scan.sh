@@ -32,5 +32,5 @@ docker run -v /var/run/docker.sock:/var/run/docker.sock -v $HOME/Library/Caches:
 echo "Scanning postgres..."
 docker run -v /var/run/docker.sock:/var/run/docker.sock -v $HOME/Library/Caches:/root/.cache/ aquasec/trivy:0.69.1 image \
   --format json \
-  postgres:15-alpine \
+  postgres:17-alpine \
   | jq '[.Results[].Vulnerabilities[]?.Severity] | group_by(.) | map({Severity: .[0], Count: length})'

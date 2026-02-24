@@ -79,7 +79,7 @@ services:
       cloudshop-postgres:
         condition: service_healthy
   cloudshop-postgres:
-    image: postgres:15-alpine
+    image: postgres:17-alpine
     container_name: cloudshop-postgres
     environment:
       POSTGRES_DB: cloudshop
