@@ -1,0 +1,17 @@
+services:
+  cloudshop_frontend_dev:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+      target: dev
+    volumes:
+      - ./frontend:/app
+    networks:
+      - cloudshop-net-dev
+      - traefik_public
+
+networks:
+  cloudshop-net-dev:
+    driver: bridge
+  traefik_public:
+    external: true

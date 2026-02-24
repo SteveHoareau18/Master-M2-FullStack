@@ -1,0 +1,104 @@
+services:
+  cloudshop-frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    container_name: cloudshop-frontend
+    networks:
+      - traefik-public
+      - cloudshop-net
+    environment:
+      API_URL: https://cloudshop-api-gateway.stevehoareau.fr
+    depends_on:
+      - cloudshop-api-gateway
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-public"
+      - "traefik.http.routers.cloudshop_frontend.rule=Host(`cloudshop.stevehoareau.fr`)"
+      - "traefik.http.routers.cloudshop_frontend.entrypoints=websecure"
+      - "traefik.http.routers.cloudshop_frontend.tls=true"
+      - "traefik.http.routers.cloudshop_frontend.tls.certresolver=letsencrypt"
+      - "traefik.http.services.cloudshop_frontend.loadbalancer.server.port=80"
+  cloudshop-api-gateway:
+    build:
+      context: api-gateway
+      dockerfile: Dockerfile
+    container_name: cloudshop-api-gateway
+    networks:
+      - cloudshop-net
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      AUTH_SERVICE_URL: https://cloudshop-auth-service.stevehoareau.fr
+      PRODUCTS_SERVICE_URL: https://cloudshop-products-api.stevehoareau.fr
+      ORDERS_SERVICE_URL: https://cloudshop-orders-api.stevehoareau.fr
+    depends_on:
+      cloudshop-postgres:
+        condition: service_healthy
+  cloudshop-orders-api:
+    build:
+      context: orders-api
+      dockerfile: Dockerfile
+    container_name: cloudshop-orders-api
+    networks:
+      - cloudshop-net
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    depends_on:
+      cloudshop-postgres:
+        condition: service_healthy
+  cloudshop-products-api:
+    build:
+      context: products-api
+      dockerfile: Dockerfile
+    container_name: cloudshop-products-api
+    networks:
+      - cloudshop-net
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.cloudshop_products_api.rule=Host(`cloudshop-products-api.stevehoareau.fr`)"
+      - "traefik.http.routers.cloudshop_products_api.entrypoints=websecure"
+      - "traefik.http.routers.cloudshop_products_api.tls=true"
+      - "traefik.http.routers.cloudshop_products_api.tls.certresolver=letsencrypt"
+      - "traefik.http.services.cloudshop_products_api.loadbalancer.server.port=8082"
+    depends_on:
+      cloudshop-postgres:
+        condition: service_healthy
+  cloudshop-auth-service:
+    build:
+      context: auth-service
+      dockerfile: Dockerfile
+    container_name: cloudshop-auth-service
+    networks:
+      - cloudshop-net
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      cloudshop-postgres:
+        condition: service_healthy
+  cloudshop-postgres:
+    image: postgres:15-alpine
+    container_name: cloudshop-postgres
+    environment:
+      POSTGRES_DB: cloudshop
+      POSTGRES_USER: cloudshop
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - cloudshop-net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin -d cloudshop" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  cloudshop-net:
+    driver: bridge
+  traefik-public:
+    external: true
+volumes:
+  postgres-data:

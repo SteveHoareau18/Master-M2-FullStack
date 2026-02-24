@@ -1,0 +1,9 @@
+services:
+  cloudshop_frontend_dev:
+    image: cloudshop:1.0
+    networks:
+      - cloudshop-net-prod
+
+networks:
+  cloudshop-net-prod:
+    driver: bridge
