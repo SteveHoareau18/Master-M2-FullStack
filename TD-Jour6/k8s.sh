@@ -7,3 +7,9 @@ kubectl apply -f k8s/deployments/
 kubectl apply -f k8s/services/
 kubectl apply -f k8s/ingress/
 kubectl get pods -n cloudshop-prod
+kubectl apply -f k8s/ingress/argocd-ingress.yaml
+kubectl apply -f argocd/apps/infrastructure.yaml
+kubectl apply -f argocd/apps/database.yaml
+kubectl apply -f argocd/apps/backend.yaml
+kubectl apply -f argocd/apps/frontend.yaml
+kubectl apply -f monitoring/servicemonitors/
