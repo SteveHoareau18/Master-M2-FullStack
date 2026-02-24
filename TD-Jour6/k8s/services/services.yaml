@@ -10,7 +10,8 @@ spec:
   selector:
     app: frontend
   ports:
-  - port: 80
+  - name: http
+    port: 80
     targetPort: 80
     protocol: TCP
 ---
@@ -26,7 +27,8 @@ spec:
   selector:
     app: api-gateway
   ports:
-  - port: 8080
+  - name: http
+    port: 8080
     targetPort: 8080
     protocol: TCP
 ---
@@ -42,7 +44,8 @@ spec:
   selector:
     app: auth-service
   ports:
-  - port: 8081
+  - name: http
+    port: 8081
     targetPort: 8082
     protocol: TCP
 ---
@@ -58,7 +61,8 @@ spec:
   selector:
     app: products-api
   ports:
-  - port: 8082
+  - name: http
+    port: 8082
     targetPort: 8082
     protocol: TCP
 ---
@@ -74,6 +78,7 @@ spec:
   selector:
     app: orders-api
   ports:
-  - port: 8083
+  - name: http
+    port: 8083
     targetPort: 8083
     protocol: TCP

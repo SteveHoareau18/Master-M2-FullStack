@@ -1,8 +1,11 @@
 from fastapi import FastAPI, HTTPException
+from prometheus_fastapi_instrumentator import Instrumentator
 from pydantic import BaseModel
 from typing import Optional
 
 app = FastAPI(title="CloudShop Products API")
+
+Instrumentator().instrument(app).expose(app)
 
 
 class Product(BaseModel):

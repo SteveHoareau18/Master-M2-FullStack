@@ -1,5 +1,8 @@
 import express from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
+import client from 'prom-client';
+
+client.collectDefaultMetrics();
 
 const app = express();
 const PORT = 8080;
@@ -7,6 +10,11 @@ const PORT = 8080;
 // Health check
 app.get('/health', (req, res) => {
     res.json({ status: 'ok' });
+});
+
+app.get('/metrics', async (req, res) => {
+    res.set('Content-Type', client.register.contentType);
+    res.end(await client.register.metrics());
 });
 
 // Proxy routes to backend services

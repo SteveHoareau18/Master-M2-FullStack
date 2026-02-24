@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type Order struct {
@@ -32,6 +34,7 @@ func ordersHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.HandleFunc("/health", healthHandler)
 	http.HandleFunc("/orders", ordersHandler)
+	http.Handle("/metrics", promhttp.Handler())
 
 	log.Println("orders-api listening on :8083")
 	if err := http.ListenAndServe(":8083", nil); err != nil {
