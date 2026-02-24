@@ -13,3 +13,5 @@ kubectl apply -f argocd/apps/database.yaml
 kubectl apply -f argocd/apps/backend.yaml
 kubectl apply -f argocd/apps/frontend.yaml
 kubectl apply -f monitoring/servicemonitors/
+kubectl apply -f monitoring/alerts/prometheus-rules.yaml
+kubectl apply -f monitoring/ingress-monitoring.yaml

@@ -1,0 +1,48 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: cloudshop-alerts
+  namespace: monitoring
+  labels:
+    release: prometheus
+spec:
+  groups:
+  - name: cloudshop.rules
+    interval: 30s
+    rules:
+    # Alerte : Taux d'erreur > 5%
+    - alert: HighErrorRate
+      expr: |
+        (
+          sum(rate(http_requests_total{status=~"5..",namespace="cloudshop-prod"}[5m]))
+          /
+          sum(rate(http_requests_total{namespace="cloudshop-prod"}[5m]))
+        ) > 0.05
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Taux d'erreur élevé détecté"
+        description: "Le service {{ $labels.service }} a trop d'erreurs 5xx."
+
+    # Alerte : Latence P95 > 1s
+    - alert: HighLatencyP95
+      expr: |
+        histogram_quantile(0.95,
+          sum(rate(http_request_duration_seconds_bucket{namespace="cloudshop-prod"}[5m])) by (le, service)
+        ) > 1
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Latence élevée"
+        description: "Le service {{ $labels.service }} est lent (> 1s)."
+
+    # Alerte : Pod CrashLooping
+    - alert: PodCrashLooping
+      expr: rate(kube_pod_container_status_restarts_total{namespace="cloudshop-prod"}[15m]) > 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Pod en CrashLoop"
