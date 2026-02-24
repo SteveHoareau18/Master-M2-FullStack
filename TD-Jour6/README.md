@@ -1,4 +1,4 @@
-# Lire d'abord le [ARCHITECTURE.MD](./ARCHITECTURE.MD)
+# Lire d'abord le [ARCHITECTURE.MD](./docs/ARCHITECTURE.MD)
 # Exécuter en DEV
 ```bash
 bash build.sh
