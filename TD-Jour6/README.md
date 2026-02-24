@@ -22,3 +22,5 @@ Vérifier que tout est lancé
 kubectl get pods -n cloudshop-prod
 kubectl get ingress -n argocd
 ```
+
+https://cloudshop-prometheus.stevehoareau.fr/targets?pool=

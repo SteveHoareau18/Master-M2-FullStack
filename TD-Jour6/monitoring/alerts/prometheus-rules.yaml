@@ -21,9 +21,10 @@ spec:
       for: 5m
       labels:
         severity: warning
+        component: backend
       annotations:
         summary: "Taux d'erreur élevé détecté"
-        description: "Le service {{ $labels.service }} a trop d'erreurs 5xx."
+        description: "Le service {{ $labels.service }} a un taux d'erreur élevé."
 
     # Alerte : Latence P95 > 1s
     - alert: HighLatencyP95
@@ -34,9 +35,9 @@ spec:
       for: 10m
       labels:
         severity: warning
+        component: performance
       annotations:
-        summary: "Latence élevée"
-        description: "Le service {{ $labels.service }} est lent (> 1s)."
+        summary: "Latence P95 élevée"
 
     # Alerte : Pod CrashLooping
     - alert: PodCrashLooping
@@ -44,5 +45,6 @@ spec:
       for: 5m
       labels:
         severity: critical
+        component: infrastructure
       annotations:
-        summary: "Pod en CrashLoop"
+        summary: "Pod en CrashLoop détecté"
