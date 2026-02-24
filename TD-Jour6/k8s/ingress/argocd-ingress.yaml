@@ -4,10 +4,9 @@ metadata:
   name: argocd-server-ingress
   namespace: argocd
   annotations:
-    kubernetes.io/ingress.class: "traefik"
-    traefik.ingress.kubernetes.io/service.serversscheme: https
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 spec:
-  ingressClassName: traefik
+  ingressClassName: nginx
   rules:
   - host: cloudshop-argocd.stevehoareau.fr
     http:
