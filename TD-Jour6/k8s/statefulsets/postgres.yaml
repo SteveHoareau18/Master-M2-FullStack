@@ -32,6 +32,7 @@ spec:
       containers:
       - name: postgres
         image: td-jour6-cloudshop-postgres:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5432
           name: postgres
