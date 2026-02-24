@@ -20,6 +20,5 @@ bash k8s.sh
 Vérifier que tout est lancé
 ```bash
 kubectl get pods -n cloudshop-prod
-kubectl apply -f k8s/ingress/argocd-ingress.yaml
 kubectl get ingress -n argocd
 ```
