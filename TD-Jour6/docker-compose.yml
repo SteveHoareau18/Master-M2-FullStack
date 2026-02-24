@@ -79,7 +79,9 @@ services:
       cloudshop-postgres:
         condition: service_healthy
   cloudshop-postgres:
-    image: postgres:17-alpine
+    build:
+      context: .
+      dockerfile: postgres.Dockerfile
     container_name: cloudshop-postgres
     environment:
       POSTGRES_DB: cloudshop
