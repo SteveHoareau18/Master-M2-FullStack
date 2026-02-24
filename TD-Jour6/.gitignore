@@ -1,2 +1,3 @@
 ./frontend/node_modules
 ./dev.docker-compose.yml
+k8s/config/secrets/*

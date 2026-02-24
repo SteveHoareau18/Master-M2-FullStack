@@ -8,3 +8,18 @@ Scan des vulnérabilités des images
 ```bash
 bash trivy-scan.sh
 ```
+
+Exécuter en PROD
+```bash
+bash build.sh
+kind create cluster --config=kind-config.yaml
+bash kind-load.sh
+bash k8s.sh
+```
+
+Vérifier que tout est lancé
+```bash
+kubectl get pods -n cloudshop-prod
+kubectl apply -f k8s/ingress/argocd-ingress.yaml
+kubectl get ingress -n argocd
+```
