@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cloudshop-backend
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/SteveHoareau18/Master-M2-FullStack.git
+    targetRevision: HEAD
+    path: TD-Jour6
+    directory:
+      include: '{deployments,services}/**/*.yaml'
+      exclude: 'deployments/frontend.yaml'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cloudshop-prod
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
