@@ -1,17 +1,110 @@
 services:
-  cloudshop_frontend_dev:
+  cloudshop-frontend:
     build:
       context: frontend
       dockerfile: Dockerfile
-      target: dev
-    volumes:
-      - ./frontend:/app
+    container_name: cloudshop-frontend-dev
+    ports:
+      - "3000:80"
     networks:
-      - cloudshop-net-dev
-      - traefik_public
+      - cloudshop-net
+    environment:
+      API_URL: http://localhost:8080
+    depends_on:
+      - cloudshop-api-gateway
+
+  cloudshop-api-gateway:
+    build:
+      context: api-gateway
+      dockerfile: Dockerfile
+    container_name: cloudshop-api-gateway-dev
+    ports:
+      - "8080:8080"
+    networks:
+      - cloudshop-net
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql://cloudshop:cloudshop@cloudshop-postgres:5432/cloudshop}
+      AUTH_SERVICE_URL: http://cloudshop-auth-service:8083
+      PRODUCTS_SERVICE_URL: http://cloudshop-products-api:8082
+      ORDERS_SERVICE_URL: http://cloudshop-orders-api:8081
+    depends_on:
+      cloudshop-postgres:
+        condition: service_healthy
+      cloudshop-auth-service:
+        condition: service_started
+      cloudshop-products-api:
+        condition: service_started
+      cloudshop-orders-api:
+        condition: service_started
+
+  cloudshop-orders-api:
+    build:
+      context: orders-api
+      dockerfile: Dockerfile
+    container_name: cloudshop-orders-api-dev
+    ports:
+      - "8081:8081"
+    networks:
+      - cloudshop-net
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql://cloudshop:cloudshop@cloudshop-postgres:5432/cloudshop}
+    depends_on:
+      cloudshop-postgres:
+        condition: service_healthy
+
+  cloudshop-products-api:
+    build:
+      context: products-api
+      dockerfile: Dockerfile
+    container_name: cloudshop-products-api-dev
+    ports:
+      - "8082:8082"
+    networks:
+      - cloudshop-net
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql://cloudshop:cloudshop@cloudshop-postgres:5432/cloudshop}
+    depends_on:
+      cloudshop-postgres:
+        condition: service_healthy
+
+  cloudshop-auth-service:
+    build:
+      context: auth-service
+      dockerfile: Dockerfile
+    container_name: cloudshop-auth-service-dev
+    ports:
+      - "8083:8083"
+    networks:
+      - cloudshop-net
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql://cloudshop:cloudshop@cloudshop-postgres:5432/cloudshop}
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-key-change-in-production}
+    depends_on:
+      cloudshop-postgres:
+        condition: service_healthy
+
+  cloudshop-postgres:
+    image: postgres:15-alpine
+    container_name: cloudshop-postgres-dev
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: cloudshop
+      POSTGRES_USER: cloudshop
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cloudshop}
+    volumes:
+      - postgres-data-dev:/var/lib/postgresql/data
+    networks:
+      - cloudshop-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cloudshop -d cloudshop"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
-  cloudshop-net-dev:
+  cloudshop-net:
     driver: bridge
-  traefik_public:
-    external: true
+
+volumes:
+  postgres-data-dev:
